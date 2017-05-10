@@ -1,5 +1,5 @@
 function InsertNode() {
-	var val = Number(document.getElementById('insert_value').value);
+	var val = Number(document.getElementById('insert_value').value || getRandomInt(0, 10000));
 	bst.InsertVal(val);
 	document.getElementById('insert_value').value = '';
 	drawTree();
@@ -7,9 +7,13 @@ function InsertNode() {
 
 function handleKeyPress(e) {
 	var key = e.keyCode || e.which;
-	if (key == 13 && document.getElementById('insert_value').value != '') {
+	if (key == 13) {
 		InsertNode();
 	}
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 // Draws the tree in treeData
