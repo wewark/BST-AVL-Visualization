@@ -1,67 +1,22 @@
-// This json represents the tree
-var treeData = {
-	name: 2,
-	children: [
-		{
-			name: 1,
-			direction: 'left',
-			children: [
-				{
-					name: 1.5,
-					direction: 'right',
-					children: [{
-							name: 2.25,
-							direction: 'left'
-						},
-						{
-							name: 2.75,
-							direction: 'right'
-						}
-					]
-				}
-			]
-		},
-		{
-			name: 3,
-			direction: 'right',
-			children: [
-				{
-					name: 2.5,
-					direction: 'left',
-					children: [{
-							name: 2.25,
-							direction: 'left'
-						},
-						{
-							name: 2.75,
-							direction: 'right'
-						}
-					]
-				},
-				{
-					name: 4,
-					direction: 'right',
-					children: [{
-							name: 2.25,
-							direction: 'left'
-						},
-						{
-							name: 2.75,
-							direction: 'right'
-						}
-					]
-				}
-			]
-		}
-	]
-};
+function InsertNode() {
+	var val = Number(document.getElementById('insert_value').value);
+	bst.InsertVal(val);
+	document.getElementById('insert_value').value = '';
+	drawTree();
+}
 
-drawTree();
-treeData.children[0].children.shift();
-drawTree();
+function handleKeyPress(e) {
+	var key = e.keyCode || e.which;
+	if (key == 13 && document.getElementById('insert_value').value != '') {
+		InsertNode();
+	}
+}
 
 // Draws the tree in treeData
 function drawTree() {
+	// This json represents the tree
+	var treeData = bst.getJSON();
+
 	// Clear the canvas
 	d3.select("svg").remove();
 
@@ -72,8 +27,8 @@ function drawTree() {
 			bottom: 50,
 			left: 90
 		},
-		width = 900 - margin.left - margin.right,
-		height = 900 - margin.top - margin.bottom;
+		width = window.innerWidth - 50 - margin.left - margin.right,
+		height = window.innerHeight - 50 - margin.top - margin.bottom;
 
 	// declares a tree layout and assigns the size
 	var treemap = d3.tree()
@@ -101,16 +56,23 @@ function drawTree() {
 		.enter().append("path")
 		.attr("class", "link")
 		.attr("d", function(d) {
-			// If its child is the only one
-			// move it to the right or to the left
-			// (the D3.js tree's default will put the nodes
-			// exactly below its parent)
-			if (d.children && d.children.length == 1) {
-				if (d.children[0].data.direction == "right")
-					moveNode(d.children[0], Math.abs(d.parent.x - d.x) / 2);
-				else
-					moveNode(d.children[0], -Math.abs(d.parent.x - d.x) / 2);
-			}
+				// If its child is the only one
+				// move it to the right or to the left
+				// (the D3.js tree's default will put the nodes
+				// exactly below its parent)
+				if (d.parent && d.parent.children.length == 1) {
+					if (d.data.direction == 'right') {
+						if (d.parent.parent)
+							moveNode(d, Math.abs(d.parent.x - d.parent.parent.x) / 2);
+						else
+							moveNode(d, width / 4);
+					} else {
+						if (d.parent.parent)
+							moveNode(d, -Math.abs(d.parent.x - d.parent.parent.x) / 2);
+						else
+							moveNode(d, -width / 4);
+					}
+				}
 
 			return "M" + d.x + "," + d.y +
 				"C" + d.x + "," + (d.y + d.parent.y) / 2 +
@@ -118,38 +80,38 @@ function drawTree() {
 				" " + d.parent.x + "," + d.parent.y;
 		});
 
-	// Moves a subtree on the X-axis by some distance
-	function moveNode(node, distance) {
-		node.x += distance;
-		if (node.children)
-			for (var i = 0; i < node.children.length; i++)
-				moveNode(node.children[i], distance);
-	}
+// Moves a subtree on the X-axis by some distance
+function moveNode(node, distance) {
+	node.x += distance;
+	if (node.children)
+		for (var i = 0; i < node.children.length; i++)
+			moveNode(node.children[i], distance);
+}
 
-	// adds each node as a group
-	var node = g.selectAll(".node")
-		.data(nodes.descendants())
-		.enter().append("g")
-		.attr("class", function(d) {
-			return "node" +
-				(d.children ? " node--internal" : " node--leaf");
-		})
-		.attr("transform", function(d) {
-			return "translate(" + d.x + "," + d.y + ")";
-		});
+// adds each node as a group
+var node = g.selectAll(".node")
+	.data(nodes.descendants())
+	.enter().append("g")
+	.attr("class", function(d) {
+		return "node" +
+			(d.children ? " node--internal" : " node--leaf");
+	})
+	.attr("transform", function(d) {
+		return "translate(" + d.x + "," + d.y + ")";
+	});
 
-	// adds the circle to the node
-	node.append("circle")
-		.attr("r", 20);
+// adds the circle to the node
+node.append("circle")
+	.attr("r", 15);
 
-	// adds the text to the node
-	node.append("text")
-		.attr("dy", ".35em")
-		.attr("y", function(d) {
-			return 0;
-		})
-		.style("text-anchor", "middle")
-		.text(function(d) {
-			return d.data.name;
-		});
+// adds the text to the node
+node.append("text")
+	.attr("dy", ".35em")
+	.attr("y", function(d) {
+		return 0;
+	})
+	.style("text-anchor", "middle")
+	.text(function(d) {
+		return d.data.name;
+	});
 }
