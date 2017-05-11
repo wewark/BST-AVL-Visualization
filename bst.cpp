@@ -93,8 +93,9 @@ node* rightrotation(node*& z)
     y->right=z;
     z->left=t3;
 
-    y->UpdateHeight();
     z->UpdateHeight();
+    y->UpdateHeight();
+
     return y;
 }
 
@@ -107,8 +108,9 @@ node* leftrotation(node*& z)
     y->left=z;
     z->right=t2;
 
-    y->UpdateHeight();
     z->UpdateHeight();
+    y->UpdateHeight();
+
     return y;
 }
 
@@ -161,34 +163,34 @@ node* Insert(node*& curr, int val)
         return curr;
 }
 
-void Delete(node*& root)  ///we will give it the pointer node we want to delete it , not the value , and after deleting we will call balance function given the root
-{
-    node*prev;
-    node*temp=root;
-    if(root->right==NULL)
-    {
-        root=root->left;
-    }
-    else if(root->left==NULL)
-    {
-        root=root->right;
-    }
-    else{
-        temp=root->left;
-        prev=root;
-        while(temp-right!=NULL)
-        {
-            prev=temp;
-            temp=temp->right;
-        }
-        root->value=temp->value;
-        if(prev==root)
-            prev->left=temp->left;
-        else prev->right=temp->left;
-    }
-    delete temp;
-
-}
+//void Delete(node*& root)  ///we will give it the pointer node we want to delete it , not the value , and after deleting we will call balance function given the root
+//{
+//    node*prev;
+//    node*temp=root;
+//    if(root->right==NULL)
+//    {
+//        root=root->left;
+//    }
+//    else if(root->left==NULL)
+//    {
+//        root=root->right;
+//    }
+//    else{
+//        temp=root->left;
+//        prev=root;
+//        while(temp-right!=NULL)
+//        {
+//            prev=temp;
+//            temp=temp->right;
+//        }
+//        root->value=temp->value;
+//        if(prev==root)
+//            prev->left=temp->left;
+//        else prev->right=temp->left;
+//    }
+//    delete temp;
+//
+//}
 
 void preorder(node*& root)
 {
@@ -227,6 +229,12 @@ int main()
    Insert(root, 30);
    Insert(root, 40);
    Insert(root, 50);
+   Insert(root, 60);
+   Insert(root, 70);
+      Insert(root, 80);
+   Insert(root, 90);
+
+
 
    preorder(root);
     return 0;

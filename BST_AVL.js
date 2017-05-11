@@ -7,14 +7,10 @@ function Node(val = null) {
 	this.UpdateHeight = function() {
 		var leftheigh = 0,
 			rightheigh = 0;
-		if (this.left) {
-			this.left.UpdateHeight();
+		if (this.left)
 			leftheigh = this.left.height;
-		}
-		if (this.right) {
-			this.right.UpdateHeight();
+		if (this.right)
 			rightheigh = this.right.height;
-		}
 		this.height = 1 + Math.max(leftheigh, rightheigh);
 	}
 
@@ -40,8 +36,8 @@ function BSTAVL() {
 		y.right = z;
 		z.left = t3;
 
-		y.UpdateHeight();
 		z.UpdateHeight();
+		y.UpdateHeight();
 		return y;
 	}
 
@@ -53,8 +49,8 @@ function BSTAVL() {
 		y.left = z;
 		z.right = t2;
 
-		y.UpdateHeight();
 		z.UpdateHeight();
+		y.UpdateHeight();
 		return y;
 	}
 
@@ -142,3 +138,4 @@ function BSTAVL() {
 var bst = new BSTAVL();
 // for (var i = 0; i < 100; i++)
 // 	bst.InsertVal(i);
+// bst.inorder();

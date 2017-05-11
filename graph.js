@@ -1,5 +1,8 @@
+var numberOfNodes = 0;
+
 function InsertNode() {
-	var val = Number(document.getElementById('insert_value').value || getRandomInt(0, 10000));
+	numberOfNodes++;
+	var val = Number(document.getElementById('insert_value').value || getRandomInt(0, 1000));
 	bst.InsertVal(val);
 	document.getElementById('insert_value').value = '';
 	drawTree();
@@ -31,8 +34,8 @@ function drawTree() {
 			bottom: 50,
 			left: 90
 		},
-		width = window.innerWidth - 50 - margin.left - margin.right,
-		height = window.innerHeight - 50 - margin.top - margin.bottom;
+		width = window.innerWidth - 10 - margin.left - margin.right,
+		height = window.innerHeight - 45 - margin.top - margin.bottom;
 
 	// declares a tree layout and assigns the size
 	var treemap = d3.tree()
@@ -79,8 +82,8 @@ function drawTree() {
 				}
 
 			return "M" + d.x + "," + d.y +
-				"C" + d.x + "," + (d.y + d.parent.y) / 2 +
-				" " + d.parent.x + "," + (d.y + d.parent.y) / 2 +
+				"C" + (d.x + d.parent.x) / 2 + "," + (d.y + d.parent.y) / 2 +
+				" " + (d.x + d.parent.x) / 2 + "," + (d.y + d.parent.y) / 2 +
 				" " + d.parent.x + "," + d.parent.y;
 		});
 
