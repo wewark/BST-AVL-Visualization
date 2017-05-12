@@ -5,12 +5,14 @@
 
 <body>
 
+<input type="text" id="value" value="" onkeypress="handleKeyPress(event)" autofocus>
+<button type="button" onclick="InsertNode();">Insert</button>
+
+<button type="button" onclick="DeleteNode();">Delete</button>
+
 <!-- load the d3.js library -->
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="BST_AVL.js" charset="utf-8"></script>
 <script src="graph.js" charset="utf-8"></script>
-
-<input type="text" id="insert_value" value="" onkeypress="handleKeyPress(event)">
-<button type="button" onclick="InsertNode();">Insert</button>
 
 </body>

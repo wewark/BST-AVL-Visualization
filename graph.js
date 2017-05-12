@@ -1,22 +1,29 @@
-var numberOfNodes = 0;
+var textBox = document.getElementById('value');
 
 function InsertNode() {
-	numberOfNodes++;
-	var val = Number(document.getElementById('insert_value').value || getRandomInt(0, 1000));
+	var val = Number(textBox.value || getRandomInt(0, 1000));
 	bst.InsertVal(val);
-	document.getElementById('insert_value').value = '';
+	textBox.value = '';
 	drawTree();
+}
+
+function DeleteNode() {
+	if (textBox.value != '') {
+		var val = Number(textBox.value);
+		bst.DeleteVal(val);
+		textBox.value = '';
+		drawTree();
+	}
 }
 
 function handleKeyPress(e) {
 	var key = e.keyCode || e.which;
-	if (key == 13) {
+	if (key == 13)
 		InsertNode();
-	}
 }
 
 function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
+	return Math.floor(Math.random() * (max - min)) + min;
 }
 
 // Draws the tree in treeData
@@ -63,23 +70,23 @@ function drawTree() {
 		.enter().append("path")
 		.attr("class", "link")
 		.attr("d", function(d) {
-				// If its child is the only one
-				// move it to the right or to the left
-				// (the D3.js tree's default will put the nodes
-				// exactly below its parent)
-				if (d.parent && d.parent.children.length == 1) {
-					if (d.data.direction == 'right') {
-						if (d.parent.parent)
-							moveNode(d, Math.abs(d.parent.x - d.parent.parent.x) / 2);
-						else
-							moveNode(d, width / 4);
-					} else {
-						if (d.parent.parent)
-							moveNode(d, -Math.abs(d.parent.x - d.parent.parent.x) / 2);
-						else
-							moveNode(d, -width / 4);
-					}
+			// If its child is the only one
+			// move it to the right or to the left
+			// (the D3.js tree's default will put the nodes
+			// exactly below its parent)
+			if (d.parent && d.parent.children.length == 1) {
+				if (d.data.direction == 'right') {
+					if (d.parent.parent)
+						moveNode(d, Math.abs(d.parent.x - d.parent.parent.x) / 2);
+					else
+						moveNode(d, width / 4);
+				} else {
+					if (d.parent.parent)
+						moveNode(d, -Math.abs(d.parent.x - d.parent.parent.x) / 2);
+					else
+						moveNode(d, -width / 4);
 				}
+			}
 
 			return "M" + d.x + "," + d.y +
 				"C" + (d.x + d.parent.x) / 2 + "," + (d.y + d.parent.y) / 2 +
@@ -87,38 +94,38 @@ function drawTree() {
 				" " + d.parent.x + "," + d.parent.y;
 		});
 
-// Moves a subtree on the X-axis by some distance
-function moveNode(node, distance) {
-	node.x += distance;
-	if (node.children)
-		for (var i = 0; i < node.children.length; i++)
-			moveNode(node.children[i], distance);
-}
+	// Moves a subtree on the X-axis by some distance
+	function moveNode(node, distance) {
+		node.x += distance;
+		if (node.children)
+			for (var i = 0; i < node.children.length; i++)
+				moveNode(node.children[i], distance);
+	}
 
-// adds each node as a group
-var node = g.selectAll(".node")
-	.data(nodes.descendants())
-	.enter().append("g")
-	.attr("class", function(d) {
-		return "node" +
-			(d.children ? " node--internal" : " node--leaf");
-	})
-	.attr("transform", function(d) {
-		return "translate(" + d.x + "," + d.y + ")";
-	});
+	// adds each node as a group
+	var node = g.selectAll(".node")
+		.data(nodes.descendants())
+		.enter().append("g")
+		.attr("class", function(d) {
+			return "node" +
+				(d.children ? " node--internal" : " node--leaf");
+		})
+		.attr("transform", function(d) {
+			return "translate(" + d.x + "," + d.y + ")";
+		});
 
-// adds the circle to the node
-node.append("circle")
-	.attr("r", 15);
+	// adds the circle to the node
+	node.append("circle")
+		.attr("r", 15);
 
-// adds the text to the node
-node.append("text")
-	.attr("dy", ".35em")
-	.attr("y", function(d) {
-		return 0;
-	})
-	.style("text-anchor", "middle")
-	.text(function(d) {
-		return d.data.name;
-	});
+	// adds the text to the node
+	node.append("text")
+		.attr("dy", ".35em")
+		.attr("y", function(d) {
+			return 0;
+		})
+		.style("text-anchor", "middle")
+		.text(function(d) {
+			return d.data.name;
+		});
 }

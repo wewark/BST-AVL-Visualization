@@ -1,5 +1,6 @@
 function Node(val = null) {
 	this.value = val;
+	this.parent = null;
 	this.height = null;
 	this.left = null;
 	this.right = null;
@@ -33,8 +34,14 @@ function BSTAVL() {
 			t3 = null;
 		if (y)
 			t3 = y.right;
+		if (t3)
+			t3.parent = z;
+
 		y.right = z;
 		z.left = t3;
+
+		y.parent = z.parent;
+		z.parent = y;
 
 		z.UpdateHeight();
 		y.UpdateHeight();
@@ -46,41 +53,63 @@ function BSTAVL() {
 			t2 = null;
 		if (y)
 			t2 = y.left;
+		if (t2)
+			t2.parent = z;
+
+
 		y.left = z;
 		z.right = t2;
+
+		y.parent = z.parent;
+		z.parent = y;
 
 		z.UpdateHeight();
 		y.UpdateHeight();
 		return y;
 	}
 
-	this.balance = function(curr) {
-		if (curr.balancefactor() == 2) ///left
+	this.balance = function(cur) {
+		if (cur.balancefactor() == 2) ///left
 		{
-			if (curr.left.balancefactor() == -1) ///if this condition is valid so it is left right
-				curr.left = this.RotateLeft(curr.left); ///here i convert it to left left
+			if (cur.left.balancefactor() == -1) ///if this condition is valid so it is left right
+				cur.left = this.RotateLeft(cur.left); ///here i convert it to left left
 
 			/// when i do this i am pretty sure that i am in left left case so i convert it to a balance tree
-			curr = this.RotateRight(curr);
-		} else if (curr.balancefactor() == -2) ///right
+			cur = this.RotateRight(cur);
+		} else if (cur.balancefactor() == -2) ///right
 		{
 
-			if (curr.right.balancefactor() == 1) ///if this condition is valid so it is right left
-				curr.right = this.RotateRight(curr.right); /// here i convert it to right right
+			if (cur.right.balancefactor() == 1) ///if this condition is valid so it is right left
+				cur.right = this.RotateRight(cur.right); /// here i convert it to right right
 
 			///when i do this i am pretty sure that i am in right right case so i convert it a balance tree
-			curr = this.RotateLeft(curr);
+			cur = this.RotateLeft(cur);
 		}
-		return curr;
+		return cur;
+	}
+
+	// Returns the node that contains val
+	this.Search = function(val, cur = this.root) {
+		if (cur == null)
+			return -1;
+
+		if (cur.value == val)
+			return cur;
+		if (val > cur.value)
+			return this.Search(val, cur.right);
+		return this.Search(val, cur.left);
 	}
 
 	this.Insert = function(cur, val) {
 		if (cur == null)
 			cur = new Node(val);
-		else if (val <= cur.value)
+		else if (val <= cur.value) {
 			cur.left = this.Insert(cur.left, val);
-		else
+			cur.left.parent = cur;
+		} else {
 			cur.right = this.Insert(cur.right, val);
+			cur.right.parent = cur;
+		}
 
 		cur.UpdateHeight();
 		cur = this.balance(cur);
@@ -91,24 +120,48 @@ function BSTAVL() {
 		this.root = this.Insert(this.root, val);
 	}
 
-	this.Delete = function(root) ///we will give it the pointer node we want to delete it , not the value , and after deleting we will call balance function given the root
+	this.DeleteVal = function(val) {
+		var node = this.Search(val);
+		if (node == -1)
+			return;
+
+		this.Delete(node);
+		this.root = this.balance(this.root)
+	}
+
+	this.Delete = function(cur) ///we will give it the pointer node we want to delete it , not the value , and after deleting we will call balance function given the cur
 	{
-		var prev, temp = root;
-		if (root.right == NULL)
-			root = root.left;
-		else if (root.left == NULL)
-			root = root.right;
-		else {
-			temp = root.left;
-			prev = root;
-			while (temp.right != NULL) {
+		var prev, temp = cur;
+		if (cur.right == null) {
+			if (cur.parent.left == cur)
+				cur.parent.left = cur.left;
+			else
+				cur.parent.right = cur.left;
+			cur.parent.UpdateHeight();
+		} else if (cur.left == null) {
+			if (cur.parent.left == cur)
+				cur.parent.left = cur.right;
+			else
+				cur.parent.right = cur.right;
+			cur.parent.UpdateHeight();
+		} else {
+			temp = cur.left;
+			prev = cur;
+			while (temp.right != null) {
 				prev = temp;
 				temp = temp.right;
 			}
-			root.value = temp.value;
-			if (prev == root)
+			cur.value = temp.value;
+			if (prev == cur)
 				prev.left = temp.left;
-			else prev.right = temp.left;
+			else
+				prev.right = temp.left;
+
+			prev.UpdateHeight();
+			while (prev.parent) {
+				prev = prev.parent;
+				prev.UpdateHeight();
+			}
 		}
 	}
 
@@ -136,6 +189,7 @@ function BSTAVL() {
 }
 
 var bst = new BSTAVL();
-// for (var i = 0; i < 100; i++)
+// for (var i = 0; i < 10; i++)
 // 	bst.InsertVal(i);
+// bst.DeleteVal(6);
 // bst.inorder();
