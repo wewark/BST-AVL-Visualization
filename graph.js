@@ -29,7 +29,7 @@ function getRandomInt(min, max) {
 // Draws the tree in treeData
 function drawTree() {
 	// This json represents the tree
-	var treeData = bst.getJSON();
+	var treeData = bst.root.json;
 
 	// Clear the canvas
 	d3.select("svg").remove();

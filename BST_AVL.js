@@ -4,14 +4,30 @@ function Node(val = null) {
 	this.height = null;
 	this.left = null;
 	this.right = null;
+	this.json = {
+		name: this.value,
+		direction: null,
+		children: []
+	};
 
 	this.UpdateHeight = function() {
 		var leftheigh = 0,
 			rightheigh = 0;
-		if (this.left)
+		this.json.children = [];
+		if (this.left) {
 			leftheigh = this.left.height;
-		if (this.right)
+
+			// GUI
+			this.json.children.push(this.left.json);
+			this.left.json.direction = 'left';
+		}
+		if (this.right) {
 			rightheigh = this.right.height;
+
+			// GUI
+			this.json.children.push(this.right.json);
+			this.right.json.direction = 'right';
+		}
 		this.height = 1 + Math.max(leftheigh, rightheigh);
 	}
 
@@ -106,9 +122,17 @@ function BSTAVL() {
 		else if (val <= cur.value) {
 			cur.left = this.Insert(cur.left, val);
 			cur.left.parent = cur;
+
+			// GUI
+			cur.left.json.direction = 'left';
+			cur.json.children.push(cur.left.json);
 		} else {
 			cur.right = this.Insert(cur.right, val);
 			cur.right.parent = cur;
+
+			// GUI
+			cur.right.json.direction = 'right';
+			cur.json.children.push(cur.right.json);
 		}
 
 		cur.UpdateHeight();
@@ -137,13 +161,17 @@ function BSTAVL() {
 				cur.parent.left = cur.left;
 			else
 				cur.parent.right = cur.left;
-			cur.parent.UpdateHeight();
+			if (cur.left)
+				cur.left.parent = cur.parent;
+
 		} else if (cur.left == null) {
 			if (cur.parent.left == cur)
 				cur.parent.left = cur.right;
 			else
 				cur.parent.right = cur.right;
-			cur.parent.UpdateHeight();
+			if (cur.right)
+				cur.right.parent = cur.parent;
+
 		} else {
 			temp = cur.left;
 			prev = cur;
@@ -152,17 +180,29 @@ function BSTAVL() {
 				temp = temp.right;
 			}
 			cur.value = temp.value;
+			cur.json.name = cur.value;
 			if (prev == cur)
 				prev.left = temp.left;
 			else
 				prev.right = temp.left;
 
 			prev.UpdateHeight();
+			prev = this.balance(prev);
 			while (prev.parent) {
 				prev = prev.parent;
 				prev.UpdateHeight();
+				prev = this.balance(prev);
 			}
+			return;
 		}
+
+		while (cur.parent) {
+			cur.UpdateHeight();
+			cur = this.balance(cur);
+			cur = cur.parent;
+		}
+		cur.UpdateHeight();
+		this.root = this.balance(cur);
 	}
 
 	this.inorder = function(cur = this.root) {
@@ -173,6 +213,7 @@ function BSTAVL() {
 		}
 	}
 
+	// Returns a json of the whole tree
 	this.getJSON = function(cur = this.root, direction = null) {
 		var json = {
 			name: cur.value,
