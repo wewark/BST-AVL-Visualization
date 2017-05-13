@@ -1,0 +1,84 @@
+ this.minV = function(cur)
+         {
+             current=cur;
+             while(current.right!=null)
+             {
+                current = current->right;
+             }
+             return current;
+         }
+
+	this.DeleteVal = function(val) {
+		this.root=this.Delete(this.root,val);
+	}
+
+	this.Delete = function(cur,val)
+	{
+		if(cur == null)
+                    return cur;
+                if(val<cur.value)
+                {
+                  cur.left = this.Delete(cur.left,val);
+                  if(cur.left!=null)
+                  cur.left.UpdateHeight();
+                }
+
+                else if(val>cur.value)
+                {
+                  cur.right = this.Delete(cur.right,val);
+                  if(cur.right!=null)
+                  cur.right.UpdateHeight();
+                }
+                else {
+                      
+                   if( (cur.left==null)||(cur.right==null) )
+                   {
+                      temp;
+                      if(cur.left==null)
+                      {
+                         temp=cur.right;
+                         if(temp!=null)
+                         temp.UpdateHeight();
+                      }
+                      else(cur.right==null)
+                      {
+                         temp=cur.left;
+                         if(temp!=null)
+                         temp.UpdateHeight();
+                      }
+                      
+                      if(temp==null)
+                      {
+                         temp=cur;
+                         cur=null;
+                      }
+                      else{
+                          cur=temp;
+                          cur.UpdateHeight();
+                      }
+                   }
+                   
+                   else {
+                         temp=minV(cur.left);
+                         cur.value = temp.value;
+			 cur.json.name = cur.value;
+                         cur.left=this.Delete(cur.left,temp.value);
+                         if(cur.left!=null)
+                            cur.left.UpdateHeight();
+                         if(cur!=null)
+                             cur.UpdateHeight();
+                  
+                   } 
+
+
+                 }
+                
+               if(cur==null)
+                   return cur;
+              
+               cur.UpdateHeight();
+               cur=balance(cur);
+
+               return cur;
+
+	}

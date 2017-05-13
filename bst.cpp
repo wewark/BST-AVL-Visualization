@@ -89,7 +89,7 @@ node* rightrotation(node*& z)
     node* y=z->left;
     node* t3=NULL;
     if(y!=NULL)
-     t3=y->right;
+        t3=y->right;
     y->right=z;
     z->left=t3;
 
@@ -104,7 +104,7 @@ node* leftrotation(node*& z)
     node* y=z->right;
     node* t2=NULL;
     if(y!=NULL);
-     t2=y->left;
+    t2=y->left;
     y->left=z;
     z->right=t2;
 
@@ -144,98 +144,156 @@ node* balance(node*& curr)
 node* Insert(node*& curr, int val)
 {
 
-        if (curr==NULL)
+    if (curr==NULL)
+    {
+        return new node(val);
+    }
+    else if (val<=curr->value)
+    {
+        curr->left=Insert(curr->left,val);
+    }
+    else
+    {
+        curr->right=Insert(curr->right,val);
+    }
+
+    curr->UpdateHeight();
+    curr=balance(curr);
+
+    return curr;
+}
+
+
+node * minV(node*& root)
+{
+    node* current = root;
+    while (current->right!=NULL)
+        current = current->right;
+    return current;
+}
+
+node* Delete(node*& root, int key)
+{
+
+    if (root == NULL)
+        return root;
+
+    if ( key < root->value ){
+        root->left = Delete(root->left, key);
+        if(root->left!=NULL)
+        root->left->UpdateHeight();
+    }
+
+    else if( key > root->value ){
+        root->right = Delete(root->right, key);
+        if(root->right!=NULL)
+        root->right->UpdateHeight();
+    }
+
+    else
+    {
+        if( (root->left == NULL) || (root->right == NULL) )
         {
-            return new node(val);
-        }
-        else if (val<=curr->value)
-        {
-            curr->left=Insert(curr->left,val);
+            node* temp;
+            if(root->left==NULL){
+                temp=root->right;
+                if(temp!=NULL)
+                    temp->UpdateHeight();
+            }
+            else {
+                temp=root->left;
+                if(temp!=NULL)
+                    temp->UpdateHeight();
+            }
+            if (temp == NULL)
+            {
+                temp = root;
+                root = NULL;
+            }
+            else{
+                root = temp;
+                root->UpdateHeight();
+            }
+            delete temp;
         }
         else
         {
-            curr->right=Insert(curr->right,val);
+            node* temp = minV(root->left);
+            root->value = temp->value;
+            root->left = Delete(root->left, temp->value);
+            if(root->left!=NULL)
+                root->left->UpdateHeight();
+            if(root!=NULL)
+                root->UpdateHeight();
         }
+    }
 
-       curr->UpdateHeight();
-        curr=balance(curr);
+    if (root == NULL)
+        return root;
 
-        return curr;
+    root->UpdateHeight();
+    root=balance(root);
+
+
+    return root;
 }
-
-//void Delete(node*& root)  ///we will give it the pointer node we want to delete it , not the value , and after deleting we will call balance function given the root
-//{
-//    node*prev;
-//    node*temp=root;
-//    if(root->right==NULL)
-//    {
-//        root=root->left;
-//    }
-//    else if(root->left==NULL)
-//    {
-//        root=root->right;
-//    }
-//    else{
-//        temp=root->left;
-//        prev=root;
-//        while(temp-right!=NULL)
-//        {
-//            prev=temp;
-//            temp=temp->right;
-//        }
-//        root->value=temp->value;
-//        if(prev==root)
-//            prev->left=temp->left;
-//        else prev->right=temp->left;
-//    }
-//    delete temp;
-//
-//}
 
 void preorder(node*& root)
 {
     if(root!=NULL){
-    cout<<root->value<<" ";
-    preorder(root->left);
-    preorder(root->right);
+        cout<<root->value<<" ";
+        preorder(root->left);
+        preorder(root->right);
     }
 }
 
 void inorder(node* root)
 {
     if(root!=NULL){
-    inorder(root->left);
-    cout<<root->value<<" ";
-    inorder(root->right);
+        inorder(root->left);
+        cout<<root->value<<" ";
+        inorder(root->right);
     }
 }
 
 void postorder(node* root)
 {
     if(root!=NULL){
-    postorder(root->left);
-    postorder(root->right);
-    cout<<root->value<<" ";
+        postorder(root->left);
+        postorder(root->right);
+        cout<<root->value<<" ";
     }
 }
 
 
 int main()
 {
-   node* root=NULL;
+    node* root=NULL;
 
-   root=Insert(root, 10);
-   Insert(root, 20);
-   Insert(root, 30);
-   Insert(root, 40);
-   Insert(root, 50);
-   Insert(root, 60);
-   Insert(root, 70);
-      Insert(root, 80);
-   Insert(root, 90);
+    root=Insert(root, 10);
+    Insert(root, 20);
+    Insert(root, 30);
+    Insert(root, 40);
+    Insert(root, 50);
+    Insert(root, 60);
+    Insert(root, 70);
+    Insert(root, 80);
+    Insert(root, 90);
+    Delete(root, 40);
+    Delete(root, 70);
+    Delete(root, 50);
+    Delete(root, 60);
+    Delete(root, 10);
+    Delete(root, 20);
+    Delete(root, 40);
+    Insert(root, 100);
+    Insert(root, 110);
+    Delete(root, 80);
 
 
 
-   preorder(root);
+
+
+    preorder(root);
     return 0;
 }
