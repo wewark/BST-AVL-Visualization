@@ -1,4 +1,5 @@
 var textBox = document.getElementById('value');
+var text = document.getElementByfor('text');
 
 function InsertNode() {
 	var val = Number(textBox.value || getRandomInt(0, 1000));
@@ -15,6 +16,21 @@ function DeleteNode() {
 		drawTree();
 	}
 }
+
+function SearchNode() {
+	if (textBox.value != '') {
+		var val = Number(textBox.value);
+		var node = bst.Search(val);
+                if(node==-1){
+		textBox.value = 'not found';
+                }
+                else 
+                {
+                 textBox.value = 'found';
+                }
+	}
+}
+
 
 function handleKeyPress(e) {
 	var key = e.keyCode || e.which;
