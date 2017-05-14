@@ -1,5 +1,5 @@
 var textBox = document.getElementById('value');
-var text = document.getElementByfor('text');
+var msg = document.getElementById('msg');
 
 function InsertNode() {
 	var val = Number(textBox.value || getRandomInt(0, 1000));
@@ -21,19 +21,22 @@ function SearchNode() {
 	if (textBox.value != '') {
 		var val = Number(textBox.value);
 		var node = bst.Search(val);
-                if(node==-1){
-		textBox.value = 'not found';
-                }
-                else 
-                {
-                 textBox.value = 'found';
-                }
+		if (node == -1)
+			msg.innerHTML = 'not found';
+		else
+			msg.innerHTML = 'found';
 	}
 }
 
+// traversal is a function
+function Print(traversal) {
+	var numbers = traversal.call(bst);
+	msg.innerHTML = numbers.join(', ');
+}
 
 function handleKeyPress(e) {
 	var key = e.keyCode || e.which;
+	msg.innerHTML = '';
 	if (key == 13)
 		InsertNode();
 }
@@ -44,11 +47,17 @@ function getRandomInt(min, max) {
 
 // Draws the tree in treeData
 function drawTree() {
-	// This json represents the tree
-	var treeData = bst.root.json;
 
 	// Clear the canvas
 	d3.select("svg").remove();
+
+	// This json represents the tree
+	var treeData;
+	// If the tree is not empty
+	if (bst.root)
+		treeData = bst.root.json;
+	else
+		return;
 
 	// set the dimensions and margins of the diagram
 	var margin = {

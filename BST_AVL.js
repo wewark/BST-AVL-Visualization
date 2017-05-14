@@ -61,6 +61,10 @@ function BSTAVL() {
 
 		z.UpdateHeight();
 		y.UpdateHeight();
+
+		if (z == this.root)
+			this.root = y;
+
 		return y;
 	}
 
@@ -81,6 +85,10 @@ function BSTAVL() {
 
 		z.UpdateHeight();
 		y.UpdateHeight();
+
+		if (z == this.root)
+			this.root = y;
+
 		return y;
 	}
 
@@ -150,14 +158,29 @@ function BSTAVL() {
 			return;
 
 		this.Delete(node);
-		this.root = this.balance(this.root)
+
+		// If the tree is not empty
+		if (this.root)
+			this.root = this.balance(this.root)
 	}
 
 	this.Delete = function(cur) ///we will give it the pointer node we want to delete it , not the value , and after deleting we will call balance function given the cur
 	{
-		var prev, temp = cur;
+		// If it is the only node in the tree
+		if (cur.parent == null && cur.right == null && cur.left == null) {
+			// Clear the tree
+			this.root = null;
+			return;
+		}
+
 		if (cur.right == null) {
-			if (cur.parent.left == cur)
+			// If it's the root node
+			if (cur.parent == null) {
+				cur = cur.left;
+				cur.parent = null;
+			}
+
+			else if (cur.parent.left == cur)
 				cur.parent.left = cur.left;
 			else
 				cur.parent.right = cur.left;
@@ -165,7 +188,13 @@ function BSTAVL() {
 				cur.left.parent = cur.parent;
 
 		} else if (cur.left == null) {
-			if (cur.parent.left == cur)
+			// If it's the root node
+			if (cur.parent == null) {
+				cur = cur.right;
+				cur.parent = null;
+			}
+
+			else if (cur.parent.left == cur)
 				cur.parent.left = cur.right;
 			else
 				cur.parent.right = cur.right;
@@ -173,6 +202,7 @@ function BSTAVL() {
 				cur.right.parent = cur.parent;
 
 		} else {
+		var prev, temp = cur;
 			temp = cur.left;
 			prev = cur;
 			while (temp.right != null) {
@@ -206,11 +236,33 @@ function BSTAVL() {
 	}
 
 	this.inorder = function(cur = this.root) {
+		var numbers = [];
 		if (cur != null) {
-			this.inorder(cur.left);
-			console.log(cur.value);
-			this.inorder(cur.right);
+			numbers = this.inorder(cur.left);
+			numbers.push(cur.value);
+			numbers = numbers.concat(this.inorder(cur.right));
 		}
+		return numbers;
+	}
+
+	this.preorder = function(cur = this.root) {
+		var numbers = [];
+		if (cur != null) {
+			numbers = [cur.value];
+			numbers = numbers.concat(this.preorder(cur.left));
+			numbers = numbers.concat(this.preorder(cur.right));
+		}
+		return numbers;
+	}
+
+	this.postorder = function(cur = this.root) {
+		var numbers = [];
+		if (cur != null) {
+			numbers = numbers.concat(this.postorder(cur.left));
+			numbers = numbers.concat(this.postorder(cur.right));
+			numbers.push(cur.value);
+		}
+		return numbers;
 	}
 
 	// Returns a json of the whole tree
