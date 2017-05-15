@@ -5,6 +5,8 @@ function InsertNode() {
 	var val = Number(textBox.value || getRandomInt(0, 1000));
 	bst.InsertVal(val);
 	textBox.value = '';
+	msg.innerHTML = '';
+	textBox.focus();
 	drawTree();
 }
 
@@ -15,6 +17,8 @@ function DeleteNode() {
 		textBox.value = '';
 		drawTree();
 	}
+	msg.innerHTML = '';
+	textBox.focus();
 }
 
 function SearchNode() {
@@ -26,12 +30,15 @@ function SearchNode() {
 		else
 			msg.innerHTML = 'found';
 	}
+	textBox.value = '';
+	textBox.focus();
 }
 
 // traversal is a function
 function Print(traversal) {
 	var numbers = traversal.call(bst);
 	msg.innerHTML = numbers.join(', ');
+	textBox.focus();
 }
 
 function handleKeyPress(e) {
@@ -97,19 +104,19 @@ function drawTree() {
 		.attr("d", function(d) {
 			// If its child is the only one
 			// move it to the right or to the left
-			// (the D3.js tree's default will put the nodes
+			// (the D3.js tree's default will put the node
 			// exactly below its parent)
 			if (d.parent && d.parent.children.length == 1) {
 				if (d.data.direction == 'right') {
 					if (d.parent.parent)
-						moveNode(d, Math.abs(d.parent.x - d.parent.parent.x) / 2);
+						d.x += Math.abs(d.parent.x - d.parent.parent.x) / 2;
 					else
-						moveNode(d, width / 4);
+						d.x += width / 4;
 				} else {
 					if (d.parent.parent)
-						moveNode(d, -Math.abs(d.parent.x - d.parent.parent.x) / 2);
+						d.x -= Math.abs(d.parent.x - d.parent.parent.x) / 2;
 					else
-						moveNode(d, -width / 4);
+						d.x -= width / 4;
 				}
 			}
 
@@ -118,14 +125,6 @@ function drawTree() {
 				" " + (d.x + d.parent.x) / 2 + "," + (d.y + d.parent.y) / 2 +
 				" " + d.parent.x + "," + d.parent.y;
 		});
-
-	// Moves a subtree on the X-axis by some distance
-	function moveNode(node, distance) {
-		node.x += distance;
-		if (node.children)
-			for (var i = 0; i < node.children.length; i++)
-				moveNode(node.children[i], distance);
-	}
 
 	// adds each node as a group
 	var node = g.selectAll(".node")

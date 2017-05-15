@@ -264,25 +264,6 @@ function BSTAVL() {
 		}
 		return numbers;
 	}
-
-	// Returns a json of the whole tree
-	this.getJSON = function(cur = this.root, direction = null) {
-		var json = {
-			name: cur.value,
-			direction: direction,
-			children: []
-		}
-
-		if (cur.left)
-			json.children.push(this.getJSON(cur.left, 'left'));
-		if (cur.right)
-			json.children.push(this.getJSON(cur.right, 'right'));
-		return json;
-	}
 }
 
 var bst = new BSTAVL();
-// for (var i = 0; i < 10; i++)
-// 	bst.InsertVal(i);
-// bst.DeleteVal(6);
-// bst.inorder();
