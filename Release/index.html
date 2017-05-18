@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="styles.css">
+
+<body>
+
+<input type="text" id="value" value="" onkeypress="handleKeyPress(event)" autofocus placeholder="Press Enter to insert (Leave empty for random number)" size="45">
+<button type="button" onclick="InsertNode();">Insert</button>
+<button type="button" onclick="DeleteNode();">Delete</button>
+<button type="button" onclick="SearchNode();">Search</button>
+<button type="button" onclick="Print(bst.inorder);">Inorder</button>
+<button type="button" onclick="Print(bst.preorder);">Preorder</button>
+<button type="button" onclick="Print(bst.postorder);">Postorder</button>
+<br>
+<span id="msg"></span>
+
+<!-- load the d3.js library -->
+<script src="d3.min.js"></script>
+<script src="BST_AVL.min.js" charset="utf-8"></script>
+<script src="graph.min.js" charset="utf-8"></script>
+
+</body>

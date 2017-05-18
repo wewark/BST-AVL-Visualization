@@ -1,0 +1,14 @@
+{
+  "name": "bst-avl-visualization",
+  "version": "1.0.0",
+  "description": "Visualizing AVL binary search tree",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Khaled Ahmed",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
